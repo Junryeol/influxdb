@@ -52,16 +52,18 @@ func NewInfluxdCommand(ctx context.Context, v *viper.Viper) *cobra.Command {
 
 func setCmdDescriptions(cmd *cobra.Command) {
 	cmd.Short = "Start the influxd server"
-	cmd.Long = `Start up the daemon configured with flags/env vars/config file.
+	cmd.Long = `
+	Start up the daemon configured with flags/env vars/config file.
 
-The order of precedence for config options are as follows (1 highest, 3 lowest):
-	1. flags
-	2. env vars
-	3. config file
+	The order of precedence for config options are as follows (1 highest, 3 lowest):
+		1. flags
+		2. env vars
+		3. config file
 
-A config file can be provided via the INFLUXD_CONFIG_PATH env var. If a file is
-not provided via an env var, influxd will look in the current directory for a
-config.{json|toml|yaml|yml} file. If one does not exist, then it will continue unchanged.`
+	A config file can be provided via the INFLUXD_CONFIG_PATH env var. If a file is
+	not provided via an env var, influxd will look in the current directory for a
+	config.{json|toml|yaml|yml} file. If one does not exist, then it will continue unchanged.
+`
 }
 
 func cmdRunE(ctx context.Context, o *RunOpts) func() error {
