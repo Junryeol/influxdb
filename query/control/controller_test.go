@@ -122,6 +122,15 @@ func validateUnusedMemory(t testing.TB, reg *prometheus.Registry, c control.Conf
 	}
 }
 
+func TestConfig_ValidateMaxConcurrencyQuota(t *testing.T) {
+	config.ConcurrencyQuota = control.MaxQueryConcurrency + 1
+	ctrl, err := control.New(config)
+	if err == nil {
+		shutdown(t, ctrl)
+		t.Fatalf("unexpected success: controller should fail to start with validation error")
+	}
+}
+
 func TestController_QuerySuccess(t *testing.T) {
 	ctrl, err := control.New(config)
 	if err != nil {

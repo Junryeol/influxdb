@@ -20,6 +20,7 @@ package control
 import (
 	"context"
 	"fmt"
+	"math"
 	"runtime/debug"
 	"sync"
 	"sync/atomic"
@@ -44,6 +45,12 @@ import (
 
 // orgLabel is the metric label to use in the controller
 const orgLabel = "org"
+
+// MaxQueryConcurrency is the max allowable value for ConcurrencyQuota
+// in controller config. The setting was picked because it's the effective
+// limit on how much a WaitGroup can be incremented.
+// See: https://github.com/golang/go/issues/20687
+const MaxQueryConcurrency = math.MaxInt32
 
 // Controller provides a central location to manage all incoming queries.
 // The controller is responsible for compiling, queueing, and executing queries.
@@ -120,6 +127,9 @@ func (c *Config) complete() (Config, error) {
 func (c *Config) validate(isComplete bool) error {
 	if c.ConcurrencyQuota <= 0 {
 		return errors.New("ConcurrencyQuota must be positive")
+	}
+	if c.ConcurrencyQuota > MaxQueryConcurrency {
+		return fmt.Errorf("ConcurrencyQuota must be less than or equal to %d", MaxQueryConcurrency)
 	}
 	if c.MemoryBytesQuotaPerQuery <= 0 {
 		return errors.New("MemoryBytesQuotaPerQuery must be positive")
