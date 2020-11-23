@@ -123,6 +123,7 @@ func validateUnusedMemory(t testing.TB, reg *prometheus.Registry, c control.Conf
 }
 
 func TestConfig_ValidateMaxConcurrencyQuota(t *testing.T) {
+	config := config
 	config.ConcurrencyQuota = control.MaxQueryConcurrency + 1
 	ctrl, err := control.New(config)
 	if err == nil {
